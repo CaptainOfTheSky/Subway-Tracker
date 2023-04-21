@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 
 export default function Tracker() {
     const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
+    // const [isLoaded, setIsLoaded] = useState(false);
 
     const [items, setItems] = useState([]);
     const [stations, setStations] = useState([]);
-    const [currentStation, setCurrentStation] = useState();
+    const [currentStation, setCurrentStation] = useState('B03');
     const baseURL = "https://api.wmata.com/StationPrediction.svc/json/";
+
     // useEffect(() => {
     //     api.getItems().then(({ items, error }) => {
     //     setIsLoaded(true);
@@ -18,27 +19,50 @@ export default function Tracker() {
     // }, []);
 
     useEffect(() => {
-        const path = "GetPrediction/B03";
-        const headers = {  };
+        const path = "GetPrediction/" + currentStation;
 
-        fetch(baseURL + path, { 'api_key': '247a49c603544b51a5d4bd147ba4a0d0' })
+        fetch(baseURL + path, { headers: { 'api_key': '247a49c603544b51a5d4bd147ba4a0d0' } })
             .then(response => response.json())
-            .then(data => { setItems(data); console.log(data) })
+            .then(data => { setItems(data.Trains); console.log("trains"); console.log(data) })
             .catch(err => setError(err))
     }, []);
+
+    useEffect(() => {
+        const path = "jStations";
+        console.log(baseURL + path)
+
+        fetch(baseURL + path, { headers: { 'api_key': '247a49c603544b51a5d4bd147ba4a0d0' } })
+            .then(response => response.json())
+            .then(data => { setStations(data.Stations); console.log(data) })
+            .catch(err => setError(err));
+
+        console.log("stations")
+        console.log(stations)
+    }, []);
+
+    function changeStation(e) {
+        setCurrentStation('B03');
+    }
 
     return (
         <div>
             <h1>Hello</h1>
-            <ul>
-                {/* {items.map((item) => (
-                    <li key={item.name}>
-                        {item.name} {item.price}
-                    </li>
-                ))} */}
+            <select onChange={changeStation}>
+                {stations && stations.length > 0 && stations.map((station) => (
+                    <option>{station.name}</option>
+                ))}
+            </select>
 
-                <p>{ error }</p>
+            <h2>Trains coming to Whatever Station {currentStation}</h2>
+            <ul>
+                {items.map((item) => (
+                    <li key={item.id}>
+                        {item.Line} Line towards {item.DestinationName}
+                    </li>
+                ))}
             </ul>
+
+            <p>{error}</p>
         </div>
     );
 }
