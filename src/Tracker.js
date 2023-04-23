@@ -11,12 +11,12 @@ export default function Tracker() {
     const baseURL = "https://api.wmata.com/";
 
     const colorLookup = {
-        "RD": { color: '#ff0000', name: "RED" },
-        "YL": { color: '#00ffff', name: "YELLOW" },
-        "SV": { color: '#888888', name: "SILVER" },
-        "GR": { color: '#00ff00', name: "GREEN" },
-        "BL": { color: '#0000ff', name: "BLUE" },
-        "OR": { color: '#00ffff', name: "ORANGE" },
+        "RD": "red",
+        "YL": "yellow",
+        "SV": "silver",
+        "GR": "green",
+        "BL": "blue",
+        "OR": "orange",
     }
     // useEffect(() => {
     //     api.getItems().then(({ items, error }) => {
@@ -68,21 +68,27 @@ export default function Tracker() {
 
     return (
         <div>
-            <h1>Hello</h1>
-            <select onChange={(e) => changeStation(e)}>
+            <h1>Trains coming to {currentStation.Name}</h1>
+            <select value={currentStation.Code} onChange={(e) => changeStation(e)}>
                 {stations && stations.length > 0 && stations.map((station) => (
-                    <option selected={station.Code == currentStation.Code} key={station.Code} value={station.Code}>{station.Name}</option>
+                    <option key={station.Code} value={station.Code}>{station.Name}</option>
                 ))}
-            </select>
-
-            <h2>Trains coming to {currentStation.Name}</h2>
-            <ul>
+            </select>   
+            <br/>
+            <table>
+                <tbody>
                 {items.map((item) => (
-                    <li key={item.id}>
-                        <span className="">{colorLookup[item.Line].name}</span> Line towards {item.DestinationName} in {item.Min} minutes
-                    </li>
+                    <tr key={item.Code}>
+                        <td><div className={`box ` + item.Line}></div></td>
+                        <td style={{ textTransform: 'capitalize' }}>{colorLookup[item.Line]} Line</td> 
+                        <td>towards</td> 
+                        <td>{item.DestinationName}</td>
+                        <td>in</td> 
+                        <td>{item.Min} minutes</td>
+                    </tr>
                 ))}
-            </ul>
+                </tbody>
+            </table>
 
             <p>{error}</p>
         </div>
