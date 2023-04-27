@@ -5,6 +5,10 @@ export default function Tracker() {
     const [error, setError] = useState(null);
     // const [isLoaded, setIsLoaded] = useState(false);
 
+    /*
+        documentation for the api can be found at 
+        https://developer.wmata.com/docs/services/5476364f031f590f38092507/operations/5476364f031f5909e4fe3310?
+    */
     const [items, setItems] = useState([]);
     const [stations, setStations] = useState([]);
     const [currentStation, setCurrentStation] = useState({ Name: "Dupont Circle", Code: "A03" });
